@@ -35,7 +35,7 @@ class RegistrationPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                SizedBox(height: 220),
+                SizedBox(height: 200),
                 TextFormField(
                   controller: _usernameController,
                   decoration: InputDecoration(
@@ -48,6 +48,7 @@ class RegistrationPage extends StatelessWidget {
                     return null;
                   },
                 ),
+                SizedBox(height: 10),
                 TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
@@ -60,6 +61,7 @@ class RegistrationPage extends StatelessWidget {
                     return null;
                   },
                 ),
+                SizedBox(height: 10),
                 TextFormField(
                   controller: _passwordController,
                   decoration: InputDecoration(
@@ -73,7 +75,7 @@ class RegistrationPage extends StatelessWidget {
                     return null;
                   },
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 10),
                 TextFormField(
                   controller: _confirmPasswordController,
                   decoration: InputDecoration(
