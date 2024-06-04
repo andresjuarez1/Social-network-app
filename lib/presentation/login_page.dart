@@ -70,7 +70,7 @@ class Login extends StatelessWidget {
               child: Container(
                 margin: EdgeInsets.only(left: 20.0),
                 child: Text(
-                  '¿No estás registrado? Regístrate',
+                  '¿No estás registrado? ¡Regístrate!',
                   style: TextStyle(fontSize: 14.0, color: Colors.blue),
                 ),
               ),
