@@ -1,7 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'presentation/login_page.dart';
-import 'firebase_options.dart';
+import 'data/firestore/firebase_options.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,3 +23,5 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+//saremana@hotmail.com
+//Canelita1
