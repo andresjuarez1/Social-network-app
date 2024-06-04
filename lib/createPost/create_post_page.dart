@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class CreatePostPage extends StatefulWidget {
   @override
@@ -26,7 +27,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     });
   }
 
-  void _submitPost() {
+  void _submitPost() async {
     // Enviar la publicación al servidor
     String title = _titleController.text;
     String content = _contentController.text;
@@ -37,6 +38,20 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
     print('Título: $title');
     print('Contenido: $content');
+    try {
+      // Create a reference to the location you want to upload to in Firebase Storage
+      final storageRef = FirebaseStorage.instance.ref();
+      final uploadsRef = storageRef.child("uploads/${DateTime.now().millisecondsSinceEpoch}_${_image!.path.split('/').last}");
+
+      // Upload the file to Firebase Storage
+      await uploadsRef.putFile(_image!);
+
+      // Get the download URL
+      final downloadURL = await uploadsRef.getDownloadURL();
+      print("File uploaded successfully. Download URL: $downloadURL");
+    } catch (e) {
+      print("Error uploading file: $e");
+    }
     Navigator.pop(context);
   }
 

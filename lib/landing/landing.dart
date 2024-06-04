@@ -23,7 +23,6 @@ class _LandingPageState extends State<LandingPage> {
     try {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection("Publicaciones")
-          .where('Usuario',isEqualTo: widget.email)
           .get();
 
       print("Successfully completed");
