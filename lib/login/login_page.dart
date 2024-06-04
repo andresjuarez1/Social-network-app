@@ -4,6 +4,7 @@ import 'package:c2_movil/landing/landing.dart';
 
 class Login extends StatelessWidget {
   void _navigateToRegistrationPage(BuildContext context) {
+
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => RegistrationPage()),

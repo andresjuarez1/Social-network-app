@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:c2_movil/login/login_page.dart';
 
@@ -10,6 +11,8 @@ class RegistrationPage extends StatelessWidget {
 
   void _register(BuildContext context) {
     if (_formKey.currentState!.validate()) {
+
+      FirebaseAuth.instance.createUserWithEmailAndPassword(email: _emailController.text, password: _passwordController.text);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Registration Successful')),
       );
