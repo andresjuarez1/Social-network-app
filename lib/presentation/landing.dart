@@ -1,8 +1,42 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:c2_movil/presentation/login_page.dart';
 import 'package:c2_movil/presentation/create_post_page.dart';
 
-class LandingPage extends StatelessWidget {
+class LandingPage extends StatefulWidget {
+  final String email;
+
+  LandingPage({required this.email});
+  @override
+  _LandingPageState createState() => _LandingPageState();
+}
+
+class _LandingPageState extends State<LandingPage> {
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection("Publicaciones")
+          .where('Usuario',isEqualTo: widget.email)
+          .get();
+
+      print("Successfully completed");
+      
+      for (var docSnapshot in querySnapshot.docs) {
+        print('${docSnapshot.id} => ${docSnapshot.data()}');
+      }
+    } catch (e) {
+      print("Error completing: $e");
+    }
+  }
+
+
   void _navigateToLoginPage(BuildContext context) {
     Navigator.push(
       context,
