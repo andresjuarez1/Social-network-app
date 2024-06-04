@@ -2,7 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:c2_movil/register/register_page.dart';
 import 'package:c2_movil/landing/landing.dart';
 
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
+  @override
+  _LoginState createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
   void _navigateToRegistrationPage(BuildContext context) {
     Navigator.push(
       context,
@@ -10,11 +19,13 @@ class Login extends StatelessWidget {
     );
   }
 
-  void _navigateToLandingPage(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => LandingPage()),
-    );
+  void _navigateToLandingPage() {
+    if (_formKey.currentState!.validate()) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => LandingPage()),
+      );
+    }
   }
 
   @override
@@ -22,38 +33,56 @@ class Login extends StatelessWidget {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(height: 40),
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Usuario',
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(height: 40),
+              TextFormField(
+                controller: _usernameController,
+                decoration: InputDecoration(
+                  labelText: 'Usuario',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'El nombre de usuario es obligatorio.';
+                  }
+                  return null;
+                },
               ),
-            ),
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Contraseña',
+              SizedBox(height: 20),
+              TextFormField(
+                controller: _passwordController,
+                decoration: InputDecoration(
+                  labelText: 'Contraseña',
+                ),
+                obscureText: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'La contraseña es obligatoria.';
+                  }
+                  return null;
+                },
               ),
-              obscureText: true,
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => _navigateToLandingPage(context),
-              child: Text('Login'),
-            ),
-            SizedBox(height: 20),
-            GestureDetector(
-              onTap: () => _navigateToRegistrationPage(context),
-              child: Container(
-                margin: EdgeInsets.only(left: 20.0),
-                child: Text(
-                  '¿No estás registrado? Regístrate',
-                  style: TextStyle(fontSize: 14.0, color: Colors.blue),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _navigateToLandingPage,
+                child: Text('Login'),
+              ),
+              SizedBox(height: 20),
+              GestureDetector(
+                onTap: () => _navigateToRegistrationPage(context),
+                child: Container(
+                  margin: EdgeInsets.only(left: 20.0),
+                  child: Text(
+                    '¿No estás registrado? Regístrate',
+                    style: TextStyle(fontSize: 14.0, color: Colors.blue),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
