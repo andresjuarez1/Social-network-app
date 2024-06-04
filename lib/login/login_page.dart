@@ -24,8 +24,9 @@ class Login extends StatelessWidget {
       );
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => LandingPage()),
+        MaterialPageRoute(builder: (context) => LandingPage(email: _emailController.text)),
       );
+
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('No user found for that email.');
