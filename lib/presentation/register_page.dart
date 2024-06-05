@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:c2_movil/login/login_page.dart';
+import 'package:c2_movil/presentation/login_page.dart';
 
 class RegistrationPage extends StatelessWidget {
   final _usernameController = TextEditingController();

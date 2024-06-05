@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:c2_movil/login/login_page.dart';
-import 'package:c2_movil/createPost/create_post_page.dart';
+import 'package:c2_movil/presentation/login_page.dart';
+import 'package:c2_movil/presentation/create_post_page.dart';
 
 class LandingPage extends StatefulWidget {
   final String email;

@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:c2_movil/register/register_page.dart';
-import 'package:c2_movil/landing/landing.dart';
+import 'package:c2_movil/presentation/register_page.dart';
+import 'package:c2_movil/presentation/landing.dart';
 
 class Login extends StatelessWidget {
 
