@@ -27,7 +27,6 @@ class _LandingPageState extends State<LandingPage> {
     try {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection("Publicaciones")
-          .where('Usuario', isEqualTo: widget.email)
           .get();
 
       List<Publicacion> tempPublicaciones = [];
@@ -38,9 +37,9 @@ class _LandingPageState extends State<LandingPage> {
         String httpUrl = await getDownloadURL(gsUrl);
 
         tempPublicaciones.add(Publicacion(
-          usuario: data['Usuario'] ?? '',
-          descripcion: data['Descripcion'] ?? '',
-          imagen: httpUrl,
+          Usuario: data['Usuario'] ?? '',
+          Descripcion: data['Descripcion'] ?? '',
+          Imagen: httpUrl,
         ));
       }
 
@@ -72,7 +71,7 @@ class _LandingPageState extends State<LandingPage> {
   void _navigateToCreatePage(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => CreatePostPage()),
+      MaterialPageRoute(builder: (context) => CreatePostPage(email: widget.email)),
     );
   }
 
@@ -114,12 +113,12 @@ class _LandingPageState extends State<LandingPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Image.network(
-                          publicacion.imagen,
+                          publicacion.Imagen,
                           fit: BoxFit.cover,
                         ),
                         SizedBox(height: 5),
                         Text(
-                          publicacion.usuario,
+                          publicacion.Usuario,
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.white,
@@ -127,7 +126,7 @@ class _LandingPageState extends State<LandingPage> {
                         ),
                         SizedBox(height: 10),
                         Text(
-                          publicacion.descripcion,
+                          publicacion.Descripcion,
                           style: TextStyle(
                             fontSize: 13,
                             color: Colors.white,

@@ -1,19 +1,19 @@
 class Publicacion {
-  final String usuario;
-  final String descripcion;
-  final String imagen;
+  final String Usuario;
+  final String Descripcion;
+  final String Imagen;
 
   Publicacion({
-    required this.usuario,
-    required this.descripcion,
-    required this.imagen,
+    required this.Usuario,
+    required this.Descripcion,
+    required this.Imagen,
   });
 
   factory Publicacion.fromMap(Map<String, dynamic> data) {
     return Publicacion(
-      usuario: data['Usuario'] ?? '',
-      descripcion: data['Descripcion'] ?? '',
-      imagen: data['Imagen'] ?? '',
+      Usuario: data['Usuario'] ?? '',
+      Descripcion: data['Descripcion'] ?? '',
+      Imagen: data['Imagen'] ?? '',
     );
   }
 }

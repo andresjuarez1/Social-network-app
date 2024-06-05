@@ -1,10 +1,15 @@
 import 'dart:io';
 
+import 'package:c2_movil/data/models/post_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class CreatePostPage extends StatefulWidget {
+  final String email;
+
+  CreatePostPage({required this.email});
   @override
   _CreatePostPageState createState() => _CreatePostPageState();
 }
@@ -28,26 +33,31 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 
   void _submitPost() async {
-    // Enviar la publicación al servidor
-    String title = _titleController.text;
+
     String content = _contentController.text;
 
     if (_image != null) {
       print('Ruta de la imagen: ${_image!.path}');
     }
-
-    print('Título: $title');
     print('Contenido: $content');
     try {
-      // Create a reference to the location you want to upload to in Firebase Storage
-      final storageRef = FirebaseStorage.instance.ref();
-      final uploadsRef = storageRef.child("uploads/${DateTime.now().millisecondsSinceEpoch}_${_image!.path.split('/').last}");
 
-      // Upload the file to Firebase Storage
+      final storageRef = FirebaseStorage.instance.ref();
+      final uploadsRef = storageRef.child("${DateTime.now().millisecondsSinceEpoch}_${_image!.path.split('/').last}");
+
       await uploadsRef.putFile(_image!);
 
-      // Get the download URL
       final downloadURL = await uploadsRef.getDownloadURL();
+      final data = {
+        "Usuario": widget.email,
+        "Descripcion": content,
+        "Imagen": downloadURL
+      };
+      var db = FirebaseFirestore.instance
+          .collection("Publicaciones")
+          .add(data).then((documentSnapshot) =>
+          print("Added Data with ID: ${documentSnapshot.id}"));
+      ;
       print("File uploaded successfully. Download URL: $downloadURL");
     } catch (e) {
       print("Error uploading file: $e");
@@ -66,13 +76,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TextFormField(
-              controller: _titleController,
-              decoration: InputDecoration(
-                labelText: 'Título',
-              ),
-            ),
-            SizedBox(height: 20),
             TextFormField(
               controller: _contentController,
               decoration: InputDecoration(
