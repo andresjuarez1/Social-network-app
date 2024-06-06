@@ -17,6 +17,7 @@ class LandingPage extends StatefulWidget {
 class _LandingPageState extends State<LandingPage> {
   List<Publicacion> publicaciones = [];
   final Color peachColor = Color(0xFFFFDAB9);
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -25,6 +26,9 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   Future<void> fetchData() async {
+    setState(() {
+      isLoading = true;
+    });
     try {
       QuerySnapshot querySnapshot =
           await FirebaseFirestore.instance.collection("Publicaciones").get();
@@ -45,10 +49,14 @@ class _LandingPageState extends State<LandingPage> {
 
       setState(() {
         publicaciones = tempPublicaciones;
+        isLoading = false;
       });
 
       print("Successfully completed");
     } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
       print("Error completing: $e");
     }
   }
@@ -59,6 +67,10 @@ class _LandingPageState extends State<LandingPage> {
       return await ref.getDownloadURL();
     }
     return gsUrl;
+  }
+
+  void _reloadData() {
+    fetchData();
   }
 
   void _navigateToLoginPage(BuildContext context) {
@@ -104,6 +116,11 @@ class _LandingPageState extends State<LandingPage> {
               color: Colors.black,
             ),
           ),
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: () => _reloadData(),
+            color: peachColor,
+          ),
         ],
         iconTheme: IconThemeData(color: Colors.white),
       ),
@@ -144,62 +161,64 @@ class _LandingPageState extends State<LandingPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: publicaciones.length,
-                itemBuilder: (context, index) {
-                  final publicacion = publicaciones[index];
-                  return Container(
-                    margin: EdgeInsets.symmetric(vertical: 8.0),
-                    padding: EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: peachColor,
-                      borderRadius: BorderRadius.circular(10.0),
-                      border: Border.all(
-                        color: peachColor,
-                        width: 1.0,
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Image.network(
-                          publicacion.Imagen,
-                          fit: BoxFit.cover,
-                        ),
-                        SizedBox(height: 5),
-                        Center(
-                          child: Text(
-                            publicacion.Usuario,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
+        child: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: publicaciones.length,
+                      itemBuilder: (context, index) {
+                        final publicacion = publicaciones[index];
+                        return Container(
+                          margin: EdgeInsets.symmetric(vertical: 8.0),
+                          padding: EdgeInsets.all(16.0),
+                          decoration: BoxDecoration(
+                            color: peachColor,
+                            borderRadius: BorderRadius.circular(10.0),
+                            border: Border.all(
+                              color: peachColor,
+                              width: 1.0,
                             ),
                           ),
-                        ),
-                        SizedBox(height: 7),
-                        Center(
-                          child: Text(
-                            publicacion.Descripcion,
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.black,
-                            ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Image.network(
+                                publicacion.Imagen,
+                                fit: BoxFit.cover,
+                              ),
+                              SizedBox(height: 5),
+                              Center(
+                                child: Text(
+                                  publicacion.Usuario,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 7),
+                              Center(
+                                child: Text(
+                                  publicacion.Descripcion,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
+                        );
+                      },
                     ),
-                  );
-                },
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }
