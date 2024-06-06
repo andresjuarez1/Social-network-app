@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';  // Importar Firebase Storage
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:c2_movil/presentation/login_page.dart';
 import 'package:c2_movil/presentation/create_post_page.dart';
-import 'package:c2_movil/data/models/post_model.dart'; // Asegúrate de ajustar la ruta según la estructura de tu proyecto
+import 'package:c2_movil/data/models/post_model.dart';
 
 class LandingPage extends StatefulWidget {
   final String email;
@@ -16,6 +16,7 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage> {
   List<Publicacion> publicaciones = [];
+  final Color peachColor = Color(0xFFFFDAB9);
 
   @override
   void initState() {
@@ -25,9 +26,8 @@ class _LandingPageState extends State<LandingPage> {
 
   Future<void> fetchData() async {
     try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection("Publicaciones")
-          .get();
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection("Publicaciones").get();
 
       List<Publicacion> tempPublicaciones = [];
 
@@ -71,13 +71,15 @@ class _LandingPageState extends State<LandingPage> {
   void _navigateToCreatePage(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => CreatePostPage(email: widget.email)),
+      MaterialPageRoute(
+          builder: (context) => CreatePostPage(email: widget.email)),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -90,16 +92,26 @@ class _LandingPageState extends State<LandingPage> {
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
+                color: peachColor, 
               ),
             ),
             SizedBox(height: 20),
             Center(
               child: ElevatedButton(
                 onPressed: () => _navigateToCreatePage(context),
-                child: Text('Crear Post'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: peachColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    side: BorderSide(color: peachColor, width: 0.7),
+                  ),
+                ),
+                child: Text(
+                  'Crear Post',
+                  style: TextStyle(color: Colors.black),
+                ),
               ),
             ),
-            SizedBox(height: 20),
             Expanded(
               child: ListView.builder(
                 itemCount: publicaciones.length,
@@ -141,7 +153,17 @@ class _LandingPageState extends State<LandingPage> {
             Center(
               child: ElevatedButton(
                 onPressed: () => _navigateToLoginPage(context),
-                child: Text('Ir a Login'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: peachColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    side: BorderSide(color: peachColor, width: 0.7),
+                  ),
+                ),
+                child: Text(
+                  'Cerrar sesión',
+                  style: TextStyle(color: Colors.black),
+                ),
               ),
             ),
           ],
