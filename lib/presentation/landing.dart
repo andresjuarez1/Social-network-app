@@ -80,38 +80,74 @@ class _LandingPageState extends State<LandingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Feed',
+              style: TextStyle(color: peachColor),
+            ),
+          ],
+        ),
+        actions: [
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 6.0),
+            decoration: BoxDecoration(
+              color: peachColor,
+              borderRadius: BorderRadius.circular(9.0),
+            ),
+            child: IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () => _navigateToCreatePage(context),
+              color: Colors.black,
+            ),
+          ),
+        ],
+        iconTheme: IconThemeData(color: Colors.white),
+      ),
+      drawer: Drawer(
+        child: Container(
+          color: peachColor,
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              SizedBox(height: 80),
+              Center(
+                child: Text(
+                  'Menú',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 30,
+                  ),
+                ),
+              ),
+              SizedBox(height: 560),
+              ListTile(
+                leading: Icon(Icons.exit_to_app, color: Colors.black, size: 20),
+                title: Text(
+                  'Cerrar sesión',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18,
+                  ),
+                ),
+                onTap: () {
+                  _navigateToLoginPage(context);
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 50),
-            Text(
-              'Feed',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: peachColor, 
-              ),
-            ),
-            SizedBox(height: 20),
-            Center(
-              child: ElevatedButton(
-                onPressed: () => _navigateToCreatePage(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: peachColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    side: BorderSide(color: peachColor, width: 0.7),
-                  ),
-                ),
-                child: Text(
-                  'Crear Post',
-                  style: TextStyle(color: Colors.black),
-                ),
-              ),
-            ),
             Expanded(
               child: ListView.builder(
                 itemCount: publicaciones.length,
@@ -120,50 +156,46 @@ class _LandingPageState extends State<LandingPage> {
                   return Container(
                     margin: EdgeInsets.symmetric(vertical: 8.0),
                     padding: EdgeInsets.all(16.0),
-                    color: Colors.blue,
+                    decoration: BoxDecoration(
+                      color: peachColor,
+                      borderRadius: BorderRadius.circular(10.0),
+                      border: Border.all(
+                        color: peachColor,
+                        width: 1.0,
+                      ),
+                    ),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Image.network(
                           publicacion.Imagen,
                           fit: BoxFit.cover,
                         ),
                         SizedBox(height: 5),
-                        Text(
-                          publicacion.Usuario,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
+                        Center(
+                          child: Text(
+                            publicacion.Usuario,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
-                        SizedBox(height: 10),
-                        Text(
-                          publicacion.Descripcion,
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.white,
+                        SizedBox(height: 7),
+                        Center(
+                          child: Text(
+                            publicacion.Descripcion,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
                       ],
                     ),
                   );
                 },
-              ),
-            ),
-            Center(
-              child: ElevatedButton(
-                onPressed: () => _navigateToLoginPage(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: peachColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    side: BorderSide(color: peachColor, width: 0.7),
-                  ),
-                ),
-                child: Text(
-                  'Cerrar sesión',
-                  style: TextStyle(color: Colors.black),
-                ),
               ),
             ),
           ],
