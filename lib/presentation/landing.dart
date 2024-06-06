@@ -37,13 +37,17 @@ class _LandingPageState extends State<LandingPage> {
 
       for (var doc in querySnapshot.docs) {
         var data = doc.data() as Map<String, dynamic>;
-        String gsUrl = data['Imagen'] ?? '';
-        String httpUrl = await getDownloadURL(gsUrl);
+        String gsImagenUrl = data['Imagen'] ?? '';
+        String httpImagenUrl = await getDownloadURL(gsImagenUrl);
+
+        String gsVideoUrl = data['Video'] ?? '';
+        String httpVideoUrl = await getDownloadURL(gsVideoUrl);
 
         tempPublicaciones.add(Publicacion(
           Usuario: data['Usuario'] ?? '',
           Descripcion: data['Descripcion'] ?? '',
-          Imagen: httpUrl,
+          Imagen: httpImagenUrl,
+          Video: httpVideoUrl, 
         ));
       }
 

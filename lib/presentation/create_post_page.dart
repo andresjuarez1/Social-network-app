@@ -57,6 +57,29 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
     if (_image != null) {
       print('Ruta de la imagen: ${_image!.path}');
+      try {
+        final storageRef = FirebaseStorage.instance.ref();
+        final uploadsRef = storageRef.child(
+            "${DateTime.now().millisecondsSinceEpoch}_${_image!.path.split('/').last}");
+
+        await uploadsRef.putFile(_image!);
+
+        final downloadURL = await uploadsRef.getDownloadURL();
+        final data = {
+          "Usuario": widget.email,
+          "Descripcion": content,
+          "Imagen": downloadURL
+        };
+        var db = FirebaseFirestore.instance
+            .collection("Publicaciones")
+            .add(data)
+            .then((documentSnapshot) =>
+                print("Added Data with ID: ${documentSnapshot.id}"));
+
+        print("File uploaded successfully. Download URL: $downloadURL");
+      } catch (e) {
+        print("Error uploading image: $e");
+      }
     }
 
     if (_video != null) {
@@ -82,35 +105,12 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
         print("File uploaded successfully. Download URL: $downloadURL");
       } catch (e) {
-        print("Error uploading file: $e");
+        print("Error uploading video: $e");
       }
     } else {
       print('No se ha seleccionado ningún video.');
     }
 
-    try {
-      final storageRef = FirebaseStorage.instance.ref();
-      final uploadsRef = storageRef.child(
-          "${DateTime.now().millisecondsSinceEpoch}_${_image!.path.split('/').last}");
-
-      await uploadsRef.putFile(_image!);
-
-      final downloadURL = await uploadsRef.getDownloadURL();
-      final data = {
-        "Usuario": widget.email,
-        "Descripcion": content,
-        "Imagen": downloadURL
-      };
-      var db = FirebaseFirestore.instance
-          .collection("Publicaciones")
-          .add(data)
-          .then((documentSnapshot) =>
-              print("Added Data with ID: ${documentSnapshot.id}"));
-
-      print("File uploaded successfully. Download URL: $downloadURL");
-    } catch (e) {
-      print("Error uploading file: $e");
-    }
     Navigator.pop(context);
   }
 
