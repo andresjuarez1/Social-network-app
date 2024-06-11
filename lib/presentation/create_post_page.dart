@@ -20,6 +20,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   final TextEditingController _contentController = TextEditingController();
   File? _image;
   File? _video;
+  File? _audio;
   final picker = ImagePicker();
   VideoPlayerController? _videoController;
   final Color peachColor = Color(0xFFFFDAB9);
@@ -50,6 +51,21 @@ class _CreatePostPageState extends State<CreatePostPage> {
       });
     } else {
       print('No se seleccionó ningún video.');
+    }
+  }
+
+  Future getAudio() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.audio,
+      allowCompression: true,
+    );
+
+    if (result != null) {
+      setState(() {
+        _audio = File(result.files.single.path!);
+      });
+    } else {
+      print('No se seleccionó ningún audio.');
     }
   }
 
@@ -111,6 +127,34 @@ class _CreatePostPageState extends State<CreatePostPage> {
       print('No se ha seleccionado ningún video.');
     }
 
+    if (_audio != null) {
+      print('Ruta del audio: ${_audio!.path}');
+      try {
+        final storageRef = FirebaseStorage.instance.ref();
+        final uploadsRef = storageRef.child(
+            "${DateTime.now().millisecondsSinceEpoch}_${_audio!.path.split('/').last}");
+
+        await uploadsRef.putFile(_audio!);
+
+        final downloadURL = await uploadsRef.getDownloadURL();
+        final data = {
+          "Usuario": widget.email,
+          "Descripcion": content,
+          "Audio": downloadURL
+        };
+        DatabaseReference ref = FirebaseDatabase.instance.ref('Publicaciones');
+        String? postId = ref.push().key;
+
+        await ref.child(postId!).set(data);
+
+        print("File uploaded successfully. Download URL: $downloadURL");
+      } catch (e) {
+        print("Error uploading audio: $e");
+      }
+    } else {
+      print('No se ha seleccionado ningún audio.');
+    }
+
     Navigator.pop(context);
   }
 
@@ -130,7 +174,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
         iconTheme: IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
-        // Cambio aquí
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -210,6 +253,30 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       aspectRatio: _videoController!.value.aspectRatio,
                       child: VideoPlayer(_videoController!),
                     )
+                  : SizedBox(),
+              SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: getAudio,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: peachColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      side: BorderSide(color: peachColor),
+                    ),
+                  ),
+                  child: Text(
+                    'Seleccionar Audio',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+              _audio != null
+                  ? Text('Audio seleccionado: ${_audio!.path.split('/').last}',
+                      style: TextStyle(color: Colors.white))
                   : SizedBox(),
               SizedBox(height: 20),
               SizedBox(

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:c2_movil/presentation/login_page.dart';
 import 'package:c2_movil/presentation/create_post_page.dart';
 import 'package:c2_movil/data/models/post_model.dart';
-
 import 'components/audio_widget.dart';
 import 'components/video_widget.dart';
 
@@ -27,13 +26,14 @@ class _LandingPageState extends State<LandingPage> {
     super.initState();
     _reloadData();
   }
+
   @override
   void didUpdateWidget(covariant LandingPage oldWidget) {
     super.didUpdateWidget(oldWidget);
     _reloadData();
   }
 
-  void _reloadData(){
+  void _reloadData() {
     setState(() {
       isLoading = true;
     });
@@ -43,6 +43,7 @@ class _LandingPageState extends State<LandingPage> {
       });
     });
   }
+
   Future<String> getDownloadURL(String gsUrl) async {
     if (gsUrl.startsWith('gs://')) {
       final ref = FirebaseStorage.instance.refFromURL(gsUrl);
@@ -50,6 +51,7 @@ class _LandingPageState extends State<LandingPage> {
     }
     return gsUrl;
   }
+
   Future<void> fetchData() async {
     setState(() {
       isLoading = true;
@@ -103,8 +105,7 @@ class _LandingPageState extends State<LandingPage> {
     }
   }
 
-
-  _buildPostWidget(Publicacion publicacion) {
+  Widget _buildPostWidget(Publicacion publicacion) {
     if (publicacion.Video != null && publicacion.Video!.isNotEmpty) {
       return VideoPlayerWidget(videoUrl: publicacion.Video!);
     } else if (publicacion.Audio != null && publicacion.Audio!.isNotEmpty) {
@@ -113,7 +114,6 @@ class _LandingPageState extends State<LandingPage> {
       return Image.network(publicacion.Imagen);
     }
   }
-
 
   void _navigateToLoginPage(BuildContext context) {
     Navigator.push(
@@ -206,58 +206,58 @@ class _LandingPageState extends State<LandingPage> {
         child: isLoading
             ? Center(child: CircularProgressIndicator())
             : Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: publicaciones.length,
-                itemBuilder: (context, index) {
-                  final publicacion = publicaciones[index];
-                  return Container(
-                    margin: EdgeInsets.symmetric(vertical: 8.0),
-                    padding: EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: peachColor,
-                      borderRadius: BorderRadius.circular(10.0),
-                      border: Border.all(
-                        color: peachColor,
-                        width: 1.0,
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        _buildPostWidget(publicacion),
-                        SizedBox(height: 5),
-                        Center(
-                          child: Text(
-                            publicacion.Usuario,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: publicaciones.length,
+                      itemBuilder: (context, index) {
+                        final publicacion = publicaciones[index];
+                        return Container(
+                          margin: EdgeInsets.symmetric(vertical: 8.0),
+                          padding: EdgeInsets.all(16.0),
+                          decoration: BoxDecoration(
+                            color: peachColor,
+                            borderRadius: BorderRadius.circular(10.0),
+                            border: Border.all(
+                              color: peachColor,
+                              width: 1.0,
                             ),
                           ),
-                        ),
-                        SizedBox(height: 7),
-                        Center(
-                          child: Text(
-                            publicacion.Descripcion,
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.black,
-                            ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              _buildPostWidget(publicacion),
+                              SizedBox(height: 5),
+                              Center(
+                                child: Text(
+                                  publicacion.Usuario,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 7),
+                              Center(
+                                child: Text(
+                                  publicacion.Descripcion,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
+                        );
+                      },
                     ),
-                  );
-                },
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }

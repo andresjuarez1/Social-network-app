@@ -19,11 +19,11 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
     super.initState();
     _audioPlayer = AudioPlayer();
     _audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
-      if (state == PlayerState.PLAYING) {
+      if (state == PlayerState.playing) {
         setState(() {
           isPlaying = true;
         });
-      } else {
+      } else if (state == PlayerState.paused || state == PlayerState.stopped) {
         setState(() {
           isPlaying = false;
         });
@@ -41,7 +41,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
             if (isPlaying) {
               _audioPlayer.pause();
             } else {
-              _audioPlayer.play(widget.audioUrl);
+              _audioPlayer.play(UrlSource(widget.audioUrl));
             }
           },
         ),
@@ -51,7 +51,7 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
 
   @override
   void dispose() {
-    super.dispose();
     _audioPlayer.dispose();
+    super.dispose();
   }
 }
