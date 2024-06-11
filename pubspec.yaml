@@ -39,8 +39,7 @@ dependencies:
   permission_handler: ^11.3.1
   chewie: ^1.2.0
   just_audio: ^0.9.30
-
-
+  audioplayers: ^0.20.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

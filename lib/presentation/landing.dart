@@ -1,11 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
 import 'package:c2_movil/presentation/login_page.dart';
 import 'package:c2_movil/presentation/create_post_page.dart';
 import 'package:c2_movil/data/models/post_model.dart';
+
+import 'components/audio_widget.dart';
+import 'components/video_widget.dart';
 
 class LandingPage extends StatefulWidget {
   final String email;
@@ -70,11 +71,15 @@ class _LandingPageState extends State<LandingPage> {
           String gsVideoUrl = item['Video'] ?? '';
           String httpVideoUrl = await getDownloadURL(gsVideoUrl);
 
+          String gsAudioUrl = item['Audio'] ?? '';
+          String httpAudioUrl = await getDownloadURL(gsAudioUrl);
+
           tempPublicaciones.add(Publicacion(
             Usuario: item['Usuario'] ?? '',
             Descripcion: item['Descripcion'] ?? '',
             Imagen: httpImagenUrl,
             Video: httpVideoUrl,
+            Audio: httpAudioUrl,
           ));
 
           setState(() {
@@ -99,13 +104,16 @@ class _LandingPageState extends State<LandingPage> {
   }
 
 
-  Widget _buildPostWidget(Publicacion publicacion) {
+  _buildPostWidget(Publicacion publicacion) {
     if (publicacion.Video != null && publicacion.Video!.isNotEmpty) {
       return VideoPlayerWidget(videoUrl: publicacion.Video!);
+    } else if (publicacion.Audio != null && publicacion.Audio!.isNotEmpty) {
+      return AudioPlayerWidget(audioUrl: publicacion.Audio!);
     } else {
       return Image.network(publicacion.Imagen);
     }
   }
+
 
   void _navigateToLoginPage(BuildContext context) {
     Navigator.push(
@@ -252,43 +260,5 @@ class _LandingPageState extends State<LandingPage> {
         ),
       ),
     );
-  }
-}
-
-class VideoPlayerWidget extends StatefulWidget {
-  final String videoUrl;
-
-  VideoPlayerWidget({required this.videoUrl});
-
-  @override
-  _VideoPlayerWidgetState createState() => _VideoPlayerWidgetState();
-}
-
-class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
-  late VideoPlayerController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = VideoPlayerController.network(widget.videoUrl)
-      ..initialize().then((_) {
-        setState(() {_controller.play();});
-      });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _controller.value.isInitialized
-        ? AspectRatio(
-      aspectRatio: _controller.value.aspectRatio,
-      child: VideoPlayer(_controller),
-    )
-        : CircularProgressIndicator();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
   }
 }
