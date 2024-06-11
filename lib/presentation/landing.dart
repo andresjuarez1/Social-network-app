@@ -175,7 +175,7 @@ class _LandingPageState extends State<LandingPage> {
               SizedBox(height: 80),
               Center(
                 child: Text(
-                  'Menú',
+                  'Menú :)',
                   style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w500,
