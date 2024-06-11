@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:video_player/video_player.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class CreatePostPage extends StatefulWidget {
   final String email;
@@ -70,11 +71,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
           "Descripcion": content,
           "Imagen": downloadURL
         };
-        var db = FirebaseFirestore.instance
-            .collection("Publicaciones")
-            .add(data)
-            .then((documentSnapshot) =>
-                print("Added Data with ID: ${documentSnapshot.id}"));
+
+        DatabaseReference ref = FirebaseDatabase.instance.ref('Publicaciones');
+        String? postId = ref.push().key;
+
+        await ref.child(postId!).set(data);
 
         print("File uploaded successfully. Download URL: $downloadURL");
       } catch (e) {

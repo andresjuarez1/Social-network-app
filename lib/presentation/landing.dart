@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:c2_movil/presentation/login_page.dart';
@@ -30,31 +31,40 @@ class _LandingPageState extends State<LandingPage> {
       isLoading = true;
     });
     try {
-      QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection("Publicaciones").get();
+      final DatabaseReference ref = FirebaseDatabase.instance.ref();
+      final DataSnapshot snapshot = await ref.child('Publicaciones').get();
 
       List<Publicacion> tempPublicaciones = [];
 
-      for (var doc in querySnapshot.docs) {
-        var data = doc.data() as Map<String, dynamic>;
-        String gsImagenUrl = data['Imagen'] ?? '';
-        String httpImagenUrl = await getDownloadURL(gsImagenUrl);
+      if (snapshot.exists) {
+        final data = snapshot.value as Map<dynamic, dynamic>;
 
-        String gsVideoUrl = data['Video'] ?? '';
-        String httpVideoUrl = await getDownloadURL(gsVideoUrl);
+        data.forEach((key, value) async {
+          var item = Map<String, dynamic>.from(value as Map);
+          String gsImagenUrl = item['Imagen'] ?? '';
+          String httpImagenUrl = await getDownloadURL(gsImagenUrl);
 
-        tempPublicaciones.add(Publicacion(
-          Usuario: data['Usuario'] ?? '',
-          Descripcion: data['Descripcion'] ?? '',
-          Imagen: httpImagenUrl,
-          Video: httpVideoUrl, 
-        ));
+          String gsVideoUrl = item['Video'] ?? '';
+          String httpVideoUrl = await getDownloadURL(gsVideoUrl);
+
+          tempPublicaciones.add(Publicacion(
+            Usuario: item['Usuario'] ?? '',
+            Descripcion: item['Descripcion'] ?? '',
+            Imagen: httpImagenUrl,
+            Video: httpVideoUrl,
+          ));
+
+          setState(() {
+            publicaciones = tempPublicaciones;
+            isLoading = false;
+          });
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        print("No data available.");
       }
-
-      setState(() {
-        publicaciones = tempPublicaciones;
-        isLoading = false;
-      });
 
       print("Successfully completed");
     } catch (e) {
@@ -64,6 +74,7 @@ class _LandingPageState extends State<LandingPage> {
       print("Error completing: $e");
     }
   }
+
 
   Future<String> getDownloadURL(String gsUrl) async {
     if (gsUrl.startsWith('gs://')) {
