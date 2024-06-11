@@ -98,11 +98,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
           "Descripcion": content,
           "Video": downloadURL
         };
-        var db = FirebaseFirestore.instance
-            .collection("Publicaciones")
-            .add(data)
-            .then((documentSnapshot) =>
-                print("Added Data with ID: ${documentSnapshot.id}"));
+        DatabaseReference ref = FirebaseDatabase.instance.ref('Publicaciones');
+        String? postId = ref.push().key;
+
+        await ref.child(postId!).set(data);
 
         print("File uploaded successfully. Download URL: $downloadURL");
       } catch (e) {
